@@ -65,6 +65,7 @@ python Main.py
 The `config.json` configuration file has the following structure:
 
 ```
+{
     "modelInput": "(90,120,3)",
     "modelLayers": 
         ["Conv2d, 20, (7,9), (1,1), valid",
