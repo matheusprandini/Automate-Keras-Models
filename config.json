@@ -1,29 +1,25 @@
 {
-    "modelInput": "(90,120,3)",
+    "dataFile": "notch_data.npy",
+    "modelInput": "(17,592,1)",
     "modelLayers": 
-        ["Conv2d, 20, (7,9), (1,1), valid",
-        "BatchNormalization",
-        "Relu",
-        "MaxPooling2D, (2,2)",
-        
-        "Conv2d, 50, (5,5), (1,1), valid",
-        "BatchNormalization",
-        "Relu",
-        "MaxPooling2D, (2,2)",
-        
-        "Conv2d, 70, (4,5), (1,1), valid",
-        "BatchNormalization",
-        "Relu",
-        "MaxPooling2D, (2,2)",
-        
-        "Flatten",
-        
-        "Dense, 500",
-        "BatchNormalization",
-        "Relu",
-        "Dropout, 0.5",
-        
-        "Dense, 4",
-        "BatchNormalization",
-        "Softmax"]
+    ["Conv2d, 8, (5,5), (1,1), valid",
+    "BatchNormalization",
+    "Relu",
+    "MaxPooling2D, (2,2)",
+    
+    "Conv2d, 8, (3,3), (1,1), valid",
+    "BatchNormalization",
+    "Relu",
+    "MaxPooling2D, (2,2)",
+    
+    "Flatten",
+    
+    "Dense, 128",
+    "BatchNormalization",
+    "Relu",
+    "Dropout, 0.5",
+    
+    "Dense, 4",
+    "BatchNormalization",
+    "Softmax"]
 }

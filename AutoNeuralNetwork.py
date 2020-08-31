@@ -126,3 +126,25 @@ class AutoNeuralNetwork(object):
     def create_dropout_layer(self, layer):
         dropoutRate = LayerConfigHandler.read_dropout_layer_config(layer)
         return Dropout(rate=dropoutRate)
+
+    def compile_model(self):
+        self.model.compile(loss = "categorical_crossentropy", optimizer = "adam", metrics=["accuracy"])
+
+    def train_model(self, mode, data, epochs, batch_size):
+
+        if mode == "Holdout":
+            inputTrainData, inputTestData, outputTrainData, outputTestData = data.split_data_holdout()
+            self.model.fit(inputTrainData, outputTrainData, epochs=epochs, batch_size=batch_size,
+                validation_data=(inputTestData, outputTestData))
+        
+        if mode == "KFold":
+            folds = data.create_k_folds()
+            
+            for trainIndex, testIndex in folds.split(data.input):
+                inputTrainData = data.input[trainIndex]
+                outputTrainData = data.output[trainIndex]
+                inputTestData = data.input[testIndex]
+                outputTestData = data.output[testIndex]
+                
+                self.model.fit(inputTrainData, outputTrainData, epochs=epochs, batch_size=batch_size,
+                    validation_data=(inputTestData, outputTestData))
