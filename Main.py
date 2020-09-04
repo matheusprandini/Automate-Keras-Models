@@ -4,13 +4,24 @@ from Data import Data
 
 config = JsonHandler.read_json("config.json")
 
-modelInput = config["modelInput"]
-modelLayers = config["modelLayers"]
-dataFile = config["dataFile"]
+dataFile = config["train"]["data"]["fileName"]
+labelType = config["train"]["data"]["labelType"]
 
-data = Data(dataFile)
+modelName = config["train"]["model"]["name"]
+modelInput = config["train"]["model"]["input"]
+modelLayers = config["train"]["model"]["layers"]
 
-neuralNetwork = AutoNeuralNetwork("Teste")
+loss = config["train"]["compile"]["loss"]
+optimizer = config["train"]["compile"]["optimizer"]
+metrics = config["train"]["compile"]["metrics"]
+
+evaluation = config["train"]["fit"]["evaluation"]
+epochs = config["train"]["fit"]["epochs"]
+batchSize = config["train"]["fit"]["batchSize"]
+
+data = Data(dataFile, labelType)
+
+neuralNetwork = AutoNeuralNetwork(modelName)
 neuralNetwork.build_model(modelInput, modelLayers)
-neuralNetwork.compile_model()
-neuralNetwork.train_model("KFold", data, 10, 32)
+neuralNetwork.compile_model(loss, optimizer, metrics)
+neuralNetwork.train_model(data, evaluation, epochs, batchSize)

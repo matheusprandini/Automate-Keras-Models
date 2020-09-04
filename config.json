@@ -1,25 +1,43 @@
 {
-    "dataFile": "notch_data.npy",
-    "modelInput": "(17,592,1)",
-    "modelLayers": 
-    ["Conv2d, 8, (5,5), (1,1), valid",
-    "BatchNormalization",
-    "Relu",
-    "MaxPooling2D, (2,2)",
-    
-    "Conv2d, 8, (3,3), (1,1), valid",
-    "BatchNormalization",
-    "Relu",
-    "MaxPooling2D, (2,2)",
-    
-    "Flatten",
-    
-    "Dense, 128",
-    "BatchNormalization",
-    "Relu",
-    "Dropout, 0.5",
-    
-    "Dense, 4",
-    "BatchNormalization",
-    "Softmax"]
+    "train": {
+        "data": {
+            "fileName": "notch_data.npy",
+            "labelType": "Sparse"
+        },
+        "model": {
+            "name": "model_test",
+            "input": "(17,592,1)",
+            "layers": 
+            ["Conv2d, 8, (5,5), (1,1), valid",
+            "BatchNormalization",
+            "Relu",
+            "MaxPooling2D, (2,2)",
+            
+            "Conv2d, 8, (3,3), (1,1), valid",
+            "BatchNormalization",
+            "Relu",
+            "MaxPooling2D, (2,2)",
+            
+            "Flatten",
+            
+            "Dense, 128",
+            "BatchNormalization",
+            "Relu",
+            "Dropout, 0.5",
+            
+            "Dense, 4",
+            "BatchNormalization",
+            "Softmax"]
+        },
+        "compile": {
+            "loss": "sparse_categorical_crossentropy",
+            "optimizer": "adam",
+            "metrics": ["sparse_categorical_accuracy"]
+        },
+        "fit": {
+            "evaluation": "KFold",
+            "epochs": 10,
+            "batchSize": 32
+        }
+    }
 }

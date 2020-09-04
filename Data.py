@@ -1,15 +1,15 @@
-from sklearn.model_selection import KFold
+from sklearn.model_selection import KFold, StratifiedKFold
 from random import shuffle
 import numpy as np
 
 class Data():
 
-    def __init__(self, dataFile):
+    def __init__(self, dataFile, labelType):
         self.input = []
         self.output = []
-        self.process_data(dataFile)
+        self.process_data(dataFile, labelType)
 
-    def process_data(self, dataFile):
+    def process_data(self, dataFile, labelType):
         examples = np.load(dataFile)
         shuffle(examples)
 
@@ -17,12 +17,14 @@ class Data():
 
         for example in examples:
             self.input.append(example[0].reshape(exampleShape))
-            self.output.append(self.convert_label_to_categorical(example[1]))
+            if labelType == "OneHot":
+                example[1] = self.encode_to_one_hot(example[1])
+            self.output.append(example[1])
 
         self.input = np.array(self.input)
         self.output = np.array(self.output)
     
-    def convert_label_to_categorical(self, label):
+    def encode_to_one_hot(self, label):
         if label == 0:
             return np.array([1,0,0,0])
         if label == 1:
@@ -43,7 +45,8 @@ class Data():
 
         return trainInput, testInput, trainOutput, testOutput
 
-    def create_k_folds(self, foldsNumber=5):
-        kFold = KFold(n_splits=foldsNumber)
-
-        return kFold
+    def create_k_folds(self, mode, foldsNumber=5):
+        if mode == "KFold":
+            return KFold(n_splits=foldsNumber)
+        if mode == "StratifiedKFold":
+            return StratifiedKFold(n_splits=foldsNumber)

@@ -2,6 +2,7 @@ from keras.layers.core import Activation, Dense, Flatten, Dropout
 from keras.layers.convolutional import Conv2D, MaxPooling2D, AveragePooling2D
 from keras.optimizers import *
 from keras.layers.normalization import BatchNormalization
+from keras.models import load_model
 from keras import layers
 from keras import models
 from LayerConfigHandler import LayerConfigHandler
@@ -127,24 +128,37 @@ class AutoNeuralNetwork(object):
         dropoutRate = LayerConfigHandler.read_dropout_layer_config(layer)
         return Dropout(rate=dropoutRate)
 
-    def compile_model(self):
-        self.model.compile(loss = "categorical_crossentropy", optimizer = "adam", metrics=["accuracy"])
+    ## Compiling Model
 
-    def train_model(self, mode, data, epochs, batch_size):
+    def compile_model(self, lossFunctionName, optimizerName, metricsList):
+        self.model.compile(loss = lossFunctionName, optimizer = optimizerName, metrics=metricsList)
 
-        if mode == "Holdout":
+    ## Training Model
+
+    def train_model(self, data, evaluation, epochs, batch_size):
+
+        if evaluation == "Holdout":
             inputTrainData, inputTestData, outputTrainData, outputTestData = data.split_data_holdout()
             self.model.fit(inputTrainData, outputTrainData, epochs=epochs, batch_size=batch_size,
                 validation_data=(inputTestData, outputTestData))
         
-        if mode == "KFold":
-            folds = data.create_k_folds()
+        if evaluation == "KFold" or evaluation == "StratifiedKFold":
+            folds = data.create_k_folds(evaluation)
             
-            for trainIndex, testIndex in folds.split(data.input):
-                inputTrainData = data.input[trainIndex]
-                outputTrainData = data.output[trainIndex]
-                inputTestData = data.input[testIndex]
-                outputTestData = data.output[testIndex]
+            for trainIndex, testIndex in folds.split(data.input, data.output):
+                inputTrainData, inputTestData = data.input[trainIndex], data.input[testIndex]
+                outputTrainData, outputTestData = data.output[trainIndex], data.output[testIndex] 
                 
                 self.model.fit(inputTrainData, outputTrainData, epochs=epochs, batch_size=batch_size,
                     validation_data=(inputTestData, outputTestData))
+
+    
+    ## Saving Model
+
+    def save_model(self):
+        self.model.save(self.name + ".h5")
+
+    ## Loading Model
+
+    def load_model(self):
+        self.model = load_model(self.name  + ".h5")
