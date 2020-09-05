@@ -2,26 +2,44 @@ from AutoNeuralNetwork import AutoNeuralNetwork
 from JsonHandler import JsonHandler
 from Data import Data
 
-config = JsonHandler.read_json("config.json")
+def main():
 
-dataFile = config["train"]["data"]["fileName"]
-labelType = config["train"]["data"]["labelType"]
+    config = JsonHandler.read_json("config.json")
 
-modelName = config["train"]["model"]["name"]
-modelInput = config["train"]["model"]["input"]
-modelLayers = config["train"]["model"]["layers"]
+    if "train" in config:
+        dataFile = config["train"]["data"]["fileName"]
+        labelType = config["train"]["data"]["labelType"]
 
-loss = config["train"]["compile"]["loss"]
-optimizer = config["train"]["compile"]["optimizer"]
-metrics = config["train"]["compile"]["metrics"]
+        modelName = config["train"]["model"]["name"]
+        modelInput = config["train"]["model"]["input"]
+        modelLayers = config["train"]["model"]["layers"]
 
-evaluation = config["train"]["fit"]["evaluation"]
-epochs = config["train"]["fit"]["epochs"]
-batchSize = config["train"]["fit"]["batchSize"]
+        loss = config["train"]["compile"]["loss"]
+        optimizer = config["train"]["compile"]["optimizer"]
+        metrics = config["train"]["compile"]["metrics"]
 
-data = Data(dataFile, labelType)
+        evaluation = config["train"]["fit"]["evaluation"]
+        epochs = config["train"]["fit"]["epochs"]
+        batchSize = config["train"]["fit"]["batchSize"]
 
-neuralNetwork = AutoNeuralNetwork(modelName)
-neuralNetwork.build_model(modelInput, modelLayers)
-neuralNetwork.compile_model(loss, optimizer, metrics)
-neuralNetwork.train_model(data, evaluation, epochs, batchSize)
+        data = Data(dataFile, labelType)
+
+        neuralNetwork = AutoNeuralNetwork(modelName)
+        neuralNetwork.build_model(modelInput, modelLayers)
+        neuralNetwork.compile_model(loss, optimizer, metrics)
+        neuralNetwork.train_model(data, evaluation, epochs, batchSize)
+        neuralNetwork.save_model()
+
+    if "test" in config:
+        dataFile = config["test"]["data"]["fileName"]
+        labelType = config["test"]["data"]["labelType"]
+
+        modelName = config["train"]["model"]["name"]
+
+        data = Data(dataFile, labelType)
+
+        neuralNetwork = AutoNeuralNetwork(modelName)
+        neuralNetwork.load_model()
+        neuralNetwork.test_model(data)
+
+main()

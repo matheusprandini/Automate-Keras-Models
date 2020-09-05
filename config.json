@@ -1,12 +1,12 @@
 {
     "train": {
         "data": {
-            "fileName": "notch_data.npy",
+            "fileName": "hopper_data.npy",
             "labelType": "Sparse"
         },
         "model": {
-            "name": "model_test",
-            "input": "(17,592,1)",
+            "name": "hopper_model",
+            "input": "(17,686,1)",
             "layers": 
             ["Conv2d, 8, (5,5), (1,1), valid",
             "BatchNormalization",
@@ -35,9 +35,18 @@
             "metrics": ["sparse_categorical_accuracy"]
         },
         "fit": {
-            "evaluation": "KFold",
+            "evaluation": "Holdout",
             "epochs": 10,
             "batchSize": 32
+        }
+    },
+    "test": {
+        "data": {
+            "fileName": "hopper_data.npy",
+            "labelType": "Sparse"
+        },
+        "model": {
+            "name": "hopper_model"
         }
     }
 }

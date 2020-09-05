@@ -128,10 +128,12 @@ class AutoNeuralNetwork(object):
         dropoutRate = LayerConfigHandler.read_dropout_layer_config(layer)
         return Dropout(rate=dropoutRate)
 
+
     ## Compiling Model
 
     def compile_model(self, lossFunctionName, optimizerName, metricsList):
         self.model.compile(loss = lossFunctionName, optimizer = optimizerName, metrics=metricsList)
+
 
     ## Training Model
 
@@ -151,6 +153,14 @@ class AutoNeuralNetwork(object):
                 
                 self.model.fit(inputTrainData, outputTrainData, epochs=epochs, batch_size=batch_size,
                     validation_data=(inputTestData, outputTestData))
+
+    
+    ## Testing Model
+
+    def test_model(self, data):
+        score = self.model.evaluate(data.input, data.output)
+        print('Test loss:', score[0]) 
+        print('Test metric:', score[1])
 
     
     ## Saving Model
